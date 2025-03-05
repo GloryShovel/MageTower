@@ -14,10 +14,11 @@ public enum GameStates
 public class GameController : MonoBehaviour
 {
     public UIController uiController;
+    public InventoryController inventoryController;
     public GameStates gameState;
 
     private GameServerMock m_gameServerMock;
-    private Items m_items;
+    private Items m_items = new Items();
 
     private void Init()
     {
@@ -25,11 +26,13 @@ public class GameController : MonoBehaviour
         uiController.Init();
         m_gameServerMock = new GameServerMock();
     }
-    private async void NewGame()
+
+    public async void NewGame()
     {
         ItemsReciver m_itemList;
         m_itemList = JsonConvert.DeserializeObject<ItemsReciver>(await m_gameServerMock.GetItemsAsync());
         m_items.Init(m_itemList);
+        inventoryController.Init(m_items);
     }
 
     void Start()

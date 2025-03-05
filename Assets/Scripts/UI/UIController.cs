@@ -65,6 +65,8 @@ public class UIController: MonoBehaviour
             case UIState.Lore: lore.gameObject.SetActive(true); break;
         }
 
+        uiState = desiredState;
+
         //loadingScreen.alpha = 0;
     }
 
