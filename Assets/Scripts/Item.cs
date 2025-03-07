@@ -9,7 +9,10 @@ public enum Category
     Helmet,
     Necklace,
     Ring,
-    Weapon
+    Weapon,
+
+    //This is suppose to be property for me to tell how much categories are there
+    Count
 }
 public enum Rarity
 {
@@ -22,15 +25,16 @@ public enum Rarity
 
 public class Item
 {
-    public string itemName { get; set; }
-    public Category category { get; set; }
-    public Rarity rarity { get; set; }
-    public int damage { get; set; }
-    public int healthPoints { get; set; }
-    public int defense { get; set; }
-    public float lifeSteal { get; set; }
-    public float criticalStrikeChance { get; set; }
-    public float attackSpeed { get; set; }
-    public float movementSpeed { get; set; }
-    public float luck { get; set; }
+    public string itemName { get; private set; }
+    public Category category { get; private set; }
+    public Rarity rarity { get; private set; }
+    public Stats stats { get; private set; }
+
+    public Item(string itemName, Category category, Rarity rarity, Stats stats)
+    {
+        this.itemName = itemName;
+        this.category = category;
+        this.rarity = rarity;
+        this.stats = stats;
+    }
 }

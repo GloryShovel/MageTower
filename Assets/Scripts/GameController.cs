@@ -13,6 +13,8 @@ public enum GameStates
 
 public class GameController : MonoBehaviour
 {
+    public Character player;
+
     public UIController uiController;
     public InventoryController inventoryController;
     public GameStates gameState;
@@ -20,25 +22,25 @@ public class GameController : MonoBehaviour
     private GameServerMock m_gameServerMock;
     private Items m_items = new Items();
 
-    private void Init()
-    {
-        gameState = GameStates.MainMenu;
-        uiController.Init();
-        m_gameServerMock = new GameServerMock();
-    }
-
     public async void NewGame()
     {
+        uiController.RequestState(UIState.Loading);
+
         ItemsReciver m_itemList;
         m_itemList = JsonConvert.DeserializeObject<ItemsReciver>(await m_gameServerMock.GetItemsAsync());
         m_items.Init(m_itemList);
         inventoryController.Init(m_items);
+        player.Init(null);
+
+        uiController.RequestState(UIState.Gameplay);
     }
 
-    void Start()
+    void Awake()
     {
-        Init();
-        
+        gameState = GameStates.MainMenu;
+        uiController.Init();
+        m_gameServerMock = new GameServerMock();
+
         //Debug.Log("List " + m_itemList.items[0].itemName);
         //Debug.Log("List " + m_itemList.items[0].category);
         //Debug.Log("List " + m_itemList.items[0].rarity);
