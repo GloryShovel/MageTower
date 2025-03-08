@@ -1,18 +1,16 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryController : MonoBehaviour
 {
-    public List<GameObject> inventoryTabs;
-    public List<Button> tabButtons;
+    public GameObject[] inventoryTabs;
+    public Button[] tabButtons;
 
     public void Init(Items items)
     {
         //Tab swich logic injection
-        for (int i = 0; i < tabButtons.Count; i++)
+        for (int i = 0; i < tabButtons.Length; i++)
         {
             var safeI = i;
             tabButtons[i].onClick.AddListener(() => { SelectTab(safeI); });
@@ -32,7 +30,7 @@ public class InventoryController : MonoBehaviour
 
     public void SelectTab(int number)
     {
-        for(int i = 0;i < inventoryTabs.Count;i++)
+        for(int i = 0;i < inventoryTabs.Length;i++)
         {
             inventoryTabs[i].SetActive(false);
         }

@@ -166,6 +166,6 @@ MonoBehaviour:
     defense: 5
     lifeSteal: 0
     criticalStrikeChance: 0
-    attackSpeed: 1
-    movementSpeed: 0
+    attackSpeed: 100
+    movementSpeed: 100
     luck: 0

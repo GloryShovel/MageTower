@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class Stats
@@ -17,8 +14,6 @@ public class Stats
 
     public Stats()
     {
-        //I made it since I'm not trusting that automation will set 0 on all values
-        //Just like memes "programmer panik / programmer kalm"
         damage = 0;
         healthPoints = 0;
         defense = 0;
@@ -42,6 +37,8 @@ public class Stats
 
     public void Add(Stats stats)
     {
+        if (stats == null) return;
+
         damage += stats.damage;
         healthPoints += stats.healthPoints;
         defense += stats.defense;

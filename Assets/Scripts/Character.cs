@@ -1,21 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public Stats baseStats { get; private set; }
+    public float attacksPS;
+    public Stats baseStats;
+    public Stats calculatedStats { get; private set; }
 
-    private Stats calculatedStats;
-    private Equipement eq;
+    private Equipement m_eq;
 
     public void Init(Item[] items)
     {
         if(items != null)
         {
-            eq.Init(items);
+            m_eq.Init(items);
         }
+        else
+        {
+            m_eq = new Equipement();
+        }
+        calculatedStats = new Stats();
     }
 
     /// <summary>
@@ -38,20 +41,22 @@ public class Character : MonoBehaviour
     {
         if(item != null)
         {
-            eq.SetItem(item);
+            m_eq.EquipItem(item);
             RecalculateStats();
         }
     }
-    public void UnequipItem(Category cat)
-    {
-        eq.UnequipItem(cat);
-        RecalculateStats();
-    }
+    //public void UnequipItem(Category cat)
+    //{
+    //    eq.UnequipItem(cat);
+    //    RecalculateStats();
+    //}
 
     public void RecalculateStats()
     {
-        calculatedStats = eq.CombinedStats();
+        calculatedStats = m_eq.CombinedStats();
         calculatedStats.Add(baseStats);
+
+        UIController.instance.statisticsController.writer.Write(calculatedStats);
     }
 
 }

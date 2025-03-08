@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum UIState
 {
@@ -16,12 +11,14 @@ public enum UIState
 
 public class UIController: MonoBehaviour
 {
-    public GameController gameController;
+    public static UIController instance;
+
+    public StatisticsController statisticsController;
     public CanvasGroup mainMenu, gameplay, howTo, lore, loadingScreen;
 
     private UIState uiState;
 
-    public void Init()
+    public void Init(Stats stats)
     {
         uiState = UIState.MainMenu;
 
@@ -30,13 +27,30 @@ public class UIController: MonoBehaviour
         gameplay.gameObject.SetActive(false);
         howTo.gameObject.SetActive(false);
         lore.gameObject.SetActive(false);
+
+        statisticsController.UpdateData(stats);
+    }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+#if UNITY_EDITOR
+            Debug.LogWarning("You have duplicates of:" + this.name);
+#endif
+        }
+        else
+        {
+            instance = this;
+        }
     }
 
     public void RequestState(UIState desiredState)
     {
         //TODO
         //Tried to serialize gamestate enum, but it doesn't work becouse of Unity, well this is for future improvement
-        switch (gameController.gameState)
+        switch (GameController.instance.gameState)
         {
             case GameStates.MainMenu:
                 Transition(desiredState);
