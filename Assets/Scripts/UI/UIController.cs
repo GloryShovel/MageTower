@@ -6,7 +6,9 @@ public enum UIState
     MainMenu,
     Gameplay,
     HowTo,
-    Lore
+    Lore,
+    GameOver,
+    Wave
 }
 
 public class UIController: MonoBehaviour
@@ -14,7 +16,7 @@ public class UIController: MonoBehaviour
     public static UIController instance;
 
     public StatisticsController statisticsController;
-    public CanvasGroup mainMenu, gameplay, howTo, lore, loadingScreen;
+    public CanvasGroup mainMenu, gameplay, howTo, lore, loadingScreen, disableWhenWave, gameOver;
 
     private UIState uiState;
 
@@ -27,6 +29,7 @@ public class UIController: MonoBehaviour
         gameplay.gameObject.SetActive(false);
         howTo.gameObject.SetActive(false);
         lore.gameObject.SetActive(false);
+        gameOver.gameObject.SetActive(false);
 
         statisticsController.UpdateData(stats);
     }
@@ -55,7 +58,7 @@ public class UIController: MonoBehaviour
             case GameStates.MainMenu:
                 Transition(desiredState);
                 break;
-            case GameStates.UI:
+            case GameStates.UI_off:
             case GameStates.Gameplay:
                 break;
             case GameStates.Loading:
@@ -69,12 +72,15 @@ public class UIController: MonoBehaviour
         gameplay.gameObject.SetActive(false);
         howTo.gameObject.SetActive(false);
         lore.gameObject.SetActive(false);
+        gameOver.gameObject.SetActive(false);
 
         switch (desiredState)
         {
             case UIState.Loading: loadingScreen.gameObject.SetActive(true); break;
             case UIState.MainMenu: mainMenu.gameObject.SetActive(true); break;
-            case UIState.Gameplay: gameplay.gameObject.SetActive(true); break;
+            case UIState.GameOver: gameOver.gameObject.SetActive(true); break;
+            case UIState.Gameplay: gameplay.gameObject.SetActive(true); gameplay.interactable = true; break;
+            case UIState.Wave: gameplay.gameObject.SetActive(true); gameplay.interactable = false; break;
             case UIState.HowTo: howTo.gameObject.SetActive(true); break;
             case UIState.Lore: lore.gameObject.SetActive(true); break;
         }

@@ -6,7 +6,7 @@ using UnityEngine;
 public enum GameStates
 {
     MainMenu,
-    UI,
+    UI_off,
     Gameplay,
     Loading
 }
@@ -15,9 +15,10 @@ public class GameController : MonoBehaviour
 {
     public static GameController instance { get; private set; }
 
-    public Character player;
-
+    public Player player;
     public InventoryController inventoryController;
+    public Spawner[] spawners;
+
     public GameStates gameState { get; private set; }
 
     private GameServerMock m_gameServerMock;
@@ -40,6 +41,10 @@ public class GameController : MonoBehaviour
         gameState = GameStates.MainMenu;
         m_gameServerMock = new GameServerMock();
 
+        for (int i = 0; i < spawners.Length; i++)
+        {
+            spawners[i].Init(1);
+        }
         player.Init(null);
         UIController.instance.Init(new Stats());
 
@@ -57,5 +62,62 @@ public class GameController : MonoBehaviour
         UIController.instance.statisticsController.UpdateData(player.calculatedStats);
 
         UIController.instance.RequestState(UIState.Gameplay);
+    }
+
+    public void StartWave()
+    {
+        UIController.instance.RequestState(UIState.Wave);
+
+        for (int i = 0; i < spawners.Length; i++)
+        {
+            spawners[i].SendEnemies(5);
+        }
+    }
+
+    public void DamagePlayer(int damage)
+    {
+        if (player.RequestTakeDamage(damage))
+        {
+            GameOver();
+        }
+        UIController.instance.statisticsController.UpdateData(player.calculatedStats);
+    }
+
+    public void DamageEnemy(Enemy enemy, int damage)
+    {
+        if (enemy.RequestTakeDamage(damage))
+        {
+            enemy.RestoreToPool();
+
+            bool isWaveFinished = false;
+            for (int i = 0;i < spawners.Length;i++)
+            {
+                if (spawners[i].finished)
+                {
+                    isWaveFinished = true;
+                }
+            }
+            if (isWaveFinished)
+            {
+                EndWave();
+            }
+        }
+    }
+
+    private void EndWave()
+    {
+        UIController.instance.RequestState(UIState.Gameplay);
+        player.RecalculateStats();
+        UIController.instance.statisticsController.UpdateData(player.calculatedStats);
+    }
+
+    private void GameOver()
+    {
+        for (int i = 0; i < spawners.Length; i++)
+        {
+            spawners[i].KillAll();
+        }
+
+        UIController.instance.RequestState(UIState.GameOver);
     }
 }
